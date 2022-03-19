@@ -1,5 +1,5 @@
 name: CI for Java Invoice
-on: [push]
+on: [ push ]
 jobs:
   test:
     name: Unit tests
@@ -13,3 +13,16 @@ jobs:
           distribution: 'adopt'
       - name: Test
         run: mvn test
+
+  checkstyle:
+    name: Checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '15'
+          distribution: 'adopt'
+      - name: Checkout
+        run: mvn checkstyle:check
