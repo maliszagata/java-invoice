@@ -4,6 +4,9 @@ jobs:
   test:
     name: Unit tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [8, 13, 15]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -26,3 +29,4 @@ jobs:
 #          distribution: 'adopt'
       - name: Checkout
         run: mvn checkstyle:check
+
