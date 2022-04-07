@@ -4,12 +4,12 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pl.edu.agh.mwo.invoice.product.DairyProduct;
-import pl.edu.agh.mwo.invoice.product.OtherProduct;
-import pl.edu.agh.mwo.invoice.product.Product;
-import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+import pl.edu.agh.mwo.invoice.product.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class InvoiceTest {
@@ -176,6 +176,33 @@ public class InvoiceTest {
         String print = invoice.print();
         System.out.println(print);
         Assert.assertEquals(1, invoice.getProducts().keySet().stream().filter(p -> p.getName().equals("Tablet")).count());
+    }
+
+    @Test
+    public void testInvoiceAddProductWithExcise() {
+        invoice.addProduct(new BottleOfWine("Wisienka", new BigDecimal(20.0)), 3);
+        invoice.addProduct(new FuelCanister("Super Canister", new BigDecimal(120.0)), 2);
+
+        Assert.assertTrue(invoice.getProducts().keySet().stream().map(p -> p.getName())
+                .collect(Collectors.toList()).containsAll(Arrays.asList("Wisienka", "Super Canister")));
+    }
+
+    @Test
+    public void testInvoiceProductWithExcisePrice() {
+        BottleOfWine wine = new BottleOfWine("Wisienka", new BigDecimal(20.0));
+        invoice.addProduct(wine, 3);
+
+        Assert.assertEquals(wine.getPriceWithTax().multiply(BigDecimal.valueOf(invoice.getProducts().get(wine))),
+                BigDecimal.valueOf(81.48));
+    }
+
+    @Test
+    public void testInvoiceFuelPrice() {
+        FuelCanister fuelCanister = new FuelCanister("Super fuel", new BigDecimal(10.0));
+        invoice.addProduct(fuelCanister, 3);
+
+        Assert.assertEquals(fuelCanister.getPriceWithTax().multiply(BigDecimal.valueOf(invoice.getProducts().get(fuelCanister))),
+                BigDecimal.valueOf(46.68));
     }
 
 }
