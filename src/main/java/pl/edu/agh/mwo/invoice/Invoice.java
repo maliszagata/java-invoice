@@ -1,12 +1,26 @@
 package pl.edu.agh.mwo.invoice;
 
+import pl.edu.agh.mwo.invoice.product.Product;
+
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import pl.edu.agh.mwo.invoice.product.Product;
+import java.util.stream.Collectors;
 
 public class Invoice {
     private Map<Product, Integer> products = new HashMap<Product, Integer>();
+    private final int number;
+    private static int counter = 0;
+
+    public Invoice() {
+        ++counter;
+        this.number = counter;
+    }
+
+    public Map<Product, Integer> getProducts() {
+        return Collections.unmodifiableMap(products);
+    }
 
     public void addProduct(Product product) {
         addProduct(product, 1);
@@ -42,6 +56,22 @@ public class Invoice {
     }
 
     public int getNumber() {
-        return 1;
+        return number;
     }
+
+    public String print() {
+
+        return "Numer faktury: " + this.getNumber() + "\n"
+                + products.keySet()
+                .stream()
+                .map(p -> productRowPrintMaker(p, products.get(p)))
+                .collect(Collectors.joining(""))
+                + "Liczba pozycji: " + products.size() + ".";
+    }
+
+    private String productRowPrintMaker(Product product, Integer quantity) {
+        return "Produkt: " + product.getName() + ", ilość: " + quantity
+                + ", cena: " + product.getPrice().multiply(BigDecimal.valueOf(quantity)) + ".\n";
+    }
+
 }

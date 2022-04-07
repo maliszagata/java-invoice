@@ -1,17 +1,15 @@
 package pl.edu.agh.mwo.invoice;
 
-import java.math.BigDecimal;
-
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import pl.edu.agh.mwo.invoice.Invoice;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+
+import java.math.BigDecimal;
 
 public class InvoiceTest {
     private Invoice invoice;
@@ -129,6 +127,43 @@ public class InvoiceTest {
     @Test
     public void testInvoiceHasNumberGreaterThan0() {
         int number = invoice.getNumber();
-        Assert.assertTrue(number > 0 );
+        Assert.assertTrue(number > 0);
     }
+
+    @Test
+    public void testInvoiceHasUniqueNumber() {
+        Invoice newInvoice = new Invoice();
+        Assert.assertTrue(newInvoice.getNumber() != invoice.getNumber());
+    }
+
+    @Test
+    public void testInvoiceCanPrintAllProducts() {
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")), 2);
+        invoice.addProduct(new OtherProduct("Pinezka", new BigDecimal("0.01")), 1000);
+
+        String print = invoice.print();
+        System.out.println(invoice.print());
+
+        Assert.assertEquals(invoice.getProducts().keySet().stream().map(Product::getName)
+                .filter(print::contains).count(), invoice.getProducts().size());
+    }
+
+    @Test
+    public void testInvoiceCanPrintInvoiceNumber() {
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")), 2);
+        invoice.addProduct(new OtherProduct("Pinezka", new BigDecimal("0.01")), 1000);
+
+        String print = invoice.print();
+        Assert.assertTrue(print.contains(String.valueOf(invoice.getNumber())));
+    }
+
+    @Test
+    public void testInvoiceCanPrintNumberOfPrintedProducts() {
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")), 2);
+        invoice.addProduct(new OtherProduct("Pinezka", new BigDecimal("0.01")), 1000);
+
+        String print = invoice.print();
+        Assert.assertTrue(print.contains(String.valueOf(invoice.getProducts().size())));
+    }
+
 }
