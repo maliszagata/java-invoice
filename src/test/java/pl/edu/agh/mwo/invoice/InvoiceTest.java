@@ -10,6 +10,7 @@ import pl.edu.agh.mwo.invoice.product.Product;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
 
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 public class InvoiceTest {
     private Invoice invoice;
@@ -164,6 +165,17 @@ public class InvoiceTest {
 
         String print = invoice.print();
         Assert.assertTrue(print.contains(String.valueOf(invoice.getProducts().size())));
+    }
+
+    @Test
+    public void testInvoiceCanGetMultipleSameProducts() {
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")), 2);
+        invoice.addProduct(new OtherProduct("Pinezka", new BigDecimal("0.01")), 1000);
+        invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal("1678")), 3);
+
+        String print = invoice.print();
+        System.out.println(print);
+        Assert.assertEquals(1, invoice.getProducts().keySet().stream().filter(p -> p.getName().equals("Tablet")).count());
     }
 
 }
