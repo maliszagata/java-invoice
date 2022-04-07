@@ -77,7 +77,8 @@ public class Invoice {
 
     private String productRowPrintMaker(Product product, Integer quantity) {
         return "Produkt: " + product.getName() + ", ilość: " + quantity
-                + ", cena: " + product.getPriceWithTax().multiply(BigDecimal.valueOf(quantity)) + ".\n";
+                + ", cena: " + product.getPriceWithTax().multiply(BigDecimal.valueOf(quantity))
+                + ".\n";
     }
 
 }
