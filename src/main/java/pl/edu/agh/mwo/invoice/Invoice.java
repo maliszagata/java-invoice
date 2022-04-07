@@ -1,12 +1,11 @@
 package pl.edu.agh.mwo.invoice;
 
-import pl.edu.agh.mwo.invoice.product.Product;
-
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
     private Map<Product, Integer> products = new HashMap<Product, Integer>();
